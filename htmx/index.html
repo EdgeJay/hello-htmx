@@ -28,21 +28,13 @@
         <div class="todo-list">
             <h1>My Todo List</h1>
 
-            <form hx-post="/add-todo" hx-target="#todo-items">
+            <form hx-post="/api/todo" hx-target="#todo-items" hx-swap="beforeend">
                 <input type="text" name="todo" placeholder="Add new todo" required />
                 <button type="submit">Add</button>
             </form>
 
             <div id="todo-items">
                 <!-- Todo items will be loaded here -->
-                <!--
-                <div class="todo-item">
-                    <span>Example todo item</span>
-                    <button hx-delete="/delete-todo/1" hx-target="closest .todo-item">
-                        Delete
-                    </button>
-                </div>
-                -->
             </div>
         </div>
     </body>
