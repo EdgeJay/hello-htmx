@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+        <title>Hello HTMX - Todo App</title>
+        <script
+            src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"
+            integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm"
+            crossorigin="anonymous"
+        ></script>
+        <style>
+            .todo-list {
+                max-width: 500px;
+                margin: 20px auto;
+            }
+            .todo-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px;
+                margin: 5px 0;
+                border: 1px solid #ddd;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="todo-list">
+            <h1>My Todo List</h1>
+
+            <form hx-post="/add-todo" hx-target="#todo-items">
+                <input type="text" name="todo" placeholder="Add new todo" required />
+                <button type="submit">Add</button>
+            </form>
+
+            <div id="todo-items">
+                <!-- Todo items will be loaded here -->
+                <!--
+                <div class="todo-item">
+                    <span>Example todo item</span>
+                    <button hx-delete="/delete-todo/1" hx-target="closest .todo-item">
+                        Delete
+                    </button>
+                </div>
+                -->
+            </div>
+        </div>
+    </body>
+</html>
