@@ -33,5 +33,5 @@ func (r *Router) SetupRoutes() {
 func (r *Router) Start() error {
 	log.Println("Starting server on :8080")
 	todoService := services.NewTodoService()
-	return http.ListenAndServe(":8080", mw.WithServices(todoService)(r.mux))
+	return http.ListenAndServe(":8080", mw.WithTodoService(todoService)(r.mux))
 }
