@@ -1,6 +1,8 @@
 package services
 
-import "github.com/EdgeJay/hello-htmx/data"
+import (
+	"github.com/EdgeJay/hello-htmx/data"
+)
 
 type TodoService struct {
 	UserTodos map[string][]data.Todo

@@ -23,8 +23,8 @@ func (r *Router) SetupRoutes() {
 	r.mux.HandleFunc("GET /", handlers.GetIndex)
 
 	// api
-	r.mux.HandleFunc("POST /api/todo", handlers.PostTodo)
-	r.mux.HandleFunc("DELETE /api/todo/{id}", handlers.DeleteTodo)
+	r.mux.Handle("POST /api/todo", mw.CheckSession(http.HandlerFunc(handlers.PostTodo)))
+	r.mux.Handle("DELETE /api/todo/{id}", mw.CheckSession(http.HandlerFunc(handlers.DeleteTodo)))
 
 	// static assets
 	r.mux.HandleFunc("GET /static/{path...}", handlers.GetStatic)

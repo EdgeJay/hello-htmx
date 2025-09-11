@@ -6,26 +6,20 @@ import (
 	"net/http"
 
 	"github.com/EdgeJay/hello-htmx/data"
-	"github.com/EdgeJay/hello-htmx/middlewares"
+	mw "github.com/EdgeJay/hello-htmx/middlewares"
 	"github.com/google/uuid"
 )
 
 func PostTodo(w http.ResponseWriter, r *http.Request) {
 	// get todo service from context
-	todoSvc := middlewares.GetTodoService(r)
+	todoSvc := mw.GetTodoService(r)
 	if todoSvc == nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
 	// get session id
-	cookie, err := r.Cookie("session_id")
-	if err != nil {
-		http.Error(w, "Session not found", http.StatusUnauthorized)
-		return
-	}
-
-	sessionID := cookie.Value
+	sessionID := mw.GetSessionID(r)
 
 	// read form value
 	if err := r.ParseForm(); err != nil {
