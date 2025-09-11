@@ -1,2 +1,2 @@
-start:
+dev:
 	@air
