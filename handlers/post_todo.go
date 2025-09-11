@@ -1,0 +1,67 @@
+package handlers
+
+import (
+	"html/template"
+	"log"
+	"net/http"
+
+	"github.com/EdgeJay/hello-htmx/data"
+	"github.com/EdgeJay/hello-htmx/middlewares"
+	"github.com/google/uuid"
+)
+
+func PostTodo(w http.ResponseWriter, r *http.Request) {
+	// get todo service from context
+	todoSvc := middlewares.GetTodoService(r)
+	if todoSvc == nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// get session id
+	cookie, err := r.Cookie("session_id")
+	if err != nil {
+		http.Error(w, "Session not found", http.StatusUnauthorized)
+		return
+	}
+
+	sessionID := cookie.Value
+
+	// read form value
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Failed to parse form", http.StatusBadRequest)
+		return
+	}
+	todoItem := r.FormValue("todo")
+	if todoItem == "" {
+		http.Error(w, "Todo item cannot be empty", http.StatusBadRequest)
+		return
+	}
+
+	log.Printf("API: Adding todo item: %s\n", todoItem)
+
+	// read todo.html template file
+	tpl, err := template.ParseFiles("./htmx/todo.html")
+	if err != nil {
+		http.Error(w, "Failed to load template", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+
+	// execute template and write to response, replacing {{.ID}} {{.Item}} with Todo
+	todo := data.Todo{
+		ID:   uuid.New().String(),
+		Item: todoItem,
+		Done: false,
+	}
+
+	if err := tpl.Execute(w, todo); err != nil {
+		http.Error(w, "Failed to render template", http.StatusInternalServerError)
+		return
+	} else {
+		// save into in-memory store
+		todoSvc.AddTodo(sessionID, todo)
+	}
+}

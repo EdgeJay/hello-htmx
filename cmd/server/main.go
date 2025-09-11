@@ -1,9 +1,9 @@
 package main
 
-import "github.com/EdgeJay/hello-htmx/web"
+import "github.com/EdgeJay/hello-htmx/routers"
 
 func main() {
-	router := web.NewRouter()
+	router := routers.NewRouter()
 	router.SetupRoutes()
 	router.Start()
 }
