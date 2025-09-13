@@ -1,4 +1,6 @@
 <div class="todo-item">
     <span>{{.Item}}</span>
-    <button hx-delete="/api/todo/{{.ID}}" hx-target="closest .todo-item">Delete</button>
+    <button hx-delete="/api/todo/{{.ID}}" hx-target="closest .todo-item" hx-swap="delete">
+        Delete
+    </button>
 </div>
