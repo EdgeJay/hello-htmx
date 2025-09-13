@@ -18,7 +18,7 @@ func NewTodoService() *TodoService {
 func (svc *TodoService) initTodos(sessionID string) {
 	if _, exists := svc.UserTodos[sessionID]; !exists {
 		svc.UserTodos[sessionID] = []data.Todo{
-			{ID: uuid.New().String(), Item: "Learn Go", Done: false},
+			{ID: uuid.New().String(), Item: "Learn Go", Done: true},
 			{ID: uuid.New().String(), Item: "Learn HTMX", Done: false},
 			{ID: uuid.New().String(), Item: "Build something awesome!", Done: false},
 		}
@@ -39,6 +39,18 @@ func (svc *TodoService) AddTodo(sessionID string, todo string, done bool) data.T
 	}
 	svc.UserTodos[sessionID] = append(svc.UserTodos[sessionID], todoItem)
 	return todoItem
+}
+
+func (svc *TodoService) ToggleTodo(sessionID string, todoId string) data.Todo {
+	svc.initTodos(sessionID)
+	for idx, todo := range svc.UserTodos[sessionID] {
+		if todo.ID == todoId {
+			todo.Done = !todo.Done
+			svc.UserTodos[sessionID][idx] = todo
+			return todo
+		}
+	}
+	return data.Todo{}
 }
 
 func (svc *TodoService) DeleteTodo(sessionID string, todoId string) {

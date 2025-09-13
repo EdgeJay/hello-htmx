@@ -4,11 +4,19 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"reflect"
 
 	mw "github.com/EdgeJay/hello-htmx/middlewares"
 )
 
-func PostTodo(w http.ResponseWriter, r *http.Request) {
+func PutTodoDone(w http.ResponseWriter, r *http.Request) {
+	// read path value
+	todoId := r.PathValue("id")
+	if todoId == "" {
+		http.Error(w, "Todo ID cannot be empty", http.StatusBadRequest)
+		return
+	}
+
 	// get todo service from context
 	todoSvc := mw.GetTodoService(r)
 	if todoSvc == nil {
@@ -19,18 +27,13 @@ func PostTodo(w http.ResponseWriter, r *http.Request) {
 	// get session id
 	sessionID := mw.GetSessionID(r)
 
-	// read form value
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Failed to parse form", http.StatusBadRequest)
-		return
-	}
-	todoItem := r.FormValue("todo")
-	if todoItem == "" {
-		http.Error(w, "Todo item cannot be empty", http.StatusBadRequest)
-		return
-	}
+	log.Printf("API: Toggling todo item with ID: %s\n", todoId)
 
-	log.Printf("API: Adding todo item: %s\n", todoItem)
+	todo := todoSvc.ToggleTodo(sessionID, todoId)
+	if reflect.ValueOf(todo).IsZero() {
+		http.Error(w, "Todo not found", http.StatusNotFound)
+		return
+	}
 
 	// read todo.html template file
 	tpl, err := template.ParseFiles("./htmx/todo.html")
@@ -41,9 +44,6 @@ func PostTodo(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
-
-	// save into in-memory store
-	todo := todoSvc.AddTodo(sessionID, todoItem, false)
 
 	// execute template and write to response, replacing {{.ID}} {{.Item}} with Todo
 	if err := tpl.Execute(w, todo); err != nil {

@@ -1,5 +1,8 @@
-<div class="todo-item">
+<div class="todo-item{{if .Done}} done{{end}}">
     <span>{{.Item}}</span>
+    <button hx-put="/api/todo/{{.ID}}/done" hx-target="closest .todo-item" hx-swap="outerHTML">
+        {{if .Done}}Undo{{else}}Done{{end}}
+    </button>
     <button hx-delete="/api/todo/{{.ID}}" hx-target="closest .todo-item" hx-swap="delete">
         Delete
     </button>
