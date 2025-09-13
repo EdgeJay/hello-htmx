@@ -5,9 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/EdgeJay/hello-htmx/data"
 	mw "github.com/EdgeJay/hello-htmx/middlewares"
-	"github.com/google/uuid"
 )
 
 func PostTodo(w http.ResponseWriter, r *http.Request) {
@@ -44,18 +42,14 @@ func PostTodo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
 
-	// execute template and write to response, replacing {{.ID}} {{.Item}} with Todo
-	todo := data.Todo{
-		ID:   uuid.New().String(),
-		Item: todoItem,
-		Done: false,
-	}
+	// save into in-memory store
+	todo := todoSvc.AddTodo(sessionID, todoItem, false)
 
+	// execute template and write to response, replacing {{.ID}} {{.Item}} with Todo
 	if err := tpl.Execute(w, todo); err != nil {
 		http.Error(w, "Failed to render template", http.StatusInternalServerError)
 		return
 	} else {
-		// save into in-memory store
-		todoSvc.AddTodo(sessionID, todo)
+
 	}
 }

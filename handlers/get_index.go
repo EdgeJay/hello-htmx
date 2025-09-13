@@ -1,11 +1,15 @@
 package handlers
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/google/uuid"
+
+	"github.com/EdgeJay/hello-htmx/data"
+	mw "github.com/EdgeJay/hello-htmx/middlewares"
 )
 
 func GetIndex(w http.ResponseWriter, r *http.Request) {
@@ -37,5 +41,32 @@ func GetIndex(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Session ID: %s\n", sessionID)
 	}
 
-	http.ServeFile(w, r, "./htmx/index.html")
+	// get user's todo list from in-memory store
+	todoSvc := mw.GetTodoService(r)
+	if todoSvc == nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	todos := todoSvc.GetTodos(sessionID)
+	log.Printf("User %s has %d todos\n", sessionID, len(todos))
+
+	tpl, err := template.ParseFiles(
+		"./htmx/index.html",
+		"./htmx/todo.html",
+	)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+
+	// execute template and write to response
+	if err := tpl.ExecuteTemplate(w, "index.html", map[string][]data.Todo{
+		"Todos": todos,
+	}); err != nil {
+		http.Error(w, "Failed to render template", http.StatusInternalServerError)
+		return
+	}
 }

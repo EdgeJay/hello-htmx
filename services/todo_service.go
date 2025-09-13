@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/EdgeJay/hello-htmx/data"
+	"github.com/google/uuid"
 )
 
 type TodoService struct {
@@ -16,7 +17,11 @@ func NewTodoService() *TodoService {
 
 func (svc *TodoService) initTodos(sessionID string) {
 	if _, exists := svc.UserTodos[sessionID]; !exists {
-		svc.UserTodos[sessionID] = []data.Todo{}
+		svc.UserTodos[sessionID] = []data.Todo{
+			{ID: uuid.New().String(), Item: "Learn Go", Done: false},
+			{ID: uuid.New().String(), Item: "Learn HTMX", Done: false},
+			{ID: uuid.New().String(), Item: "Build something awesome!", Done: false},
+		}
 	}
 }
 
@@ -25,7 +30,13 @@ func (svc *TodoService) GetTodos(sessionID string) []data.Todo {
 	return svc.UserTodos[sessionID]
 }
 
-func (svc *TodoService) AddTodo(sessionID string, todo data.Todo) {
+func (svc *TodoService) AddTodo(sessionID string, todo string, done bool) data.Todo {
 	svc.initTodos(sessionID)
-	svc.UserTodos[sessionID] = append(svc.UserTodos[sessionID], todo)
+	todoItem := data.Todo{
+		ID:   uuid.New().String(),
+		Item: todo,
+		Done: done,
+	}
+	svc.UserTodos[sessionID] = append(svc.UserTodos[sessionID], todoItem)
+	return todoItem
 }
