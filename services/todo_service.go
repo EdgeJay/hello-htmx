@@ -40,3 +40,13 @@ func (svc *TodoService) AddTodo(sessionID string, todo string, done bool) data.T
 	svc.UserTodos[sessionID] = append(svc.UserTodos[sessionID], todoItem)
 	return todoItem
 }
+
+func (svc *TodoService) DeleteTodo(sessionID string, todoId string) {
+	todos := svc.GetTodos(sessionID)
+	for idx, t := range todos {
+		if t.ID == todoId {
+			svc.UserTodos[sessionID] = append(todos[:idx], todos[idx+1:]...)
+			break
+		}
+	}
+}
