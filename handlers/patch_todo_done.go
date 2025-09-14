@@ -9,7 +9,7 @@ import (
 	mw "github.com/EdgeJay/hello-htmx/middlewares"
 )
 
-func PutTodoDone(w http.ResponseWriter, r *http.Request) {
+func PatchTodoDone(w http.ResponseWriter, r *http.Request) {
 	// read path value
 	todoId := r.PathValue("id")
 	if todoId == "" {

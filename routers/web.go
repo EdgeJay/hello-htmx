@@ -24,7 +24,7 @@ func (r *Router) SetupRoutes() {
 
 	// api
 	r.mux.Handle("POST /api/todo", mw.CheckSession(http.HandlerFunc(handlers.PostTodo)))
-	r.mux.Handle("PUT /api/todo/{id}/done", mw.CheckSession(http.HandlerFunc(handlers.PutTodoDone)))
+	r.mux.Handle("PATCH /api/todo/{id}/done", mw.CheckSession(http.HandlerFunc(handlers.PatchTodoDone)))
 	r.mux.Handle("DELETE /api/todo/{id}", mw.CheckSession(http.HandlerFunc(handlers.DeleteTodo)))
 
 	// static assets
