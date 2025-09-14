@@ -10,6 +10,7 @@
             integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm"
             crossorigin="anonymous"
         ></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <style>
             .todo-list {
                 max-width: 500px;
@@ -22,10 +23,11 @@
                 margin: 5px 0;
                 border: 1px solid #ddd;
             }
-            .todo-item span {
+            .todo-item span.todo-item-text,
+            .todo-item .todo-item-edit {
                 flex-grow: 1;
             }
-            .todo-item.done span {
+            .todo-item.done span.todo-item-text {
                 text-decoration: line-through;
                 color: #888;
             }

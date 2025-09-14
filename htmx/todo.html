@@ -1,5 +1,20 @@
-<div class="todo-item{{if .Done}} done{{end}}">
-    <span>{{.Item}}</span>
+<div class="todo-item{{if .Done}} done{{end}}" x-data="{ editing: false }">
+    <span class="todo-item-text" x-show="!editing">{{.Item}}</span>
+    <div class="todo-item-edit" x-show="editing">
+        <form
+            hx-patch="/api/todo/{{.ID}}"
+            hx-target="closest .todo-item"
+            hx-swap="outerHTML"
+            x-on:submit.prevent="editing = false"
+        >
+            <input type="text" name="todo" value="{{.Item}}" required />
+            <button type="submit">Save</button>
+        </form>
+    </div>
+    <button @click="editing = !editing">
+        <span x-show="!editing">✏️</span>
+        <span x-show="editing">❌</span>
+    </button>
     <button hx-patch="/api/todo/{{.ID}}/done" hx-target="closest .todo-item" hx-swap="outerHTML">
         {{if .Done}}Undo{{else}}Done{{end}}
     </button>

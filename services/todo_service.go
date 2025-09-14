@@ -41,6 +41,18 @@ func (svc *TodoService) AddTodo(sessionID string, todo string, done bool) data.T
 	return todoItem
 }
 
+func (svc *TodoService) UpdateTodo(sessionID string, todoId string, newItem string) data.Todo {
+	svc.initTodos(sessionID)
+	for idx, todo := range svc.UserTodos[sessionID] {
+		if todo.ID == todoId {
+			todo.Item = newItem
+			svc.UserTodos[sessionID][idx] = todo
+			return todo
+		}
+	}
+	return data.Todo{}
+}
+
 func (svc *TodoService) ToggleTodo(sessionID string, todoId string) data.Todo {
 	svc.initTodos(sessionID)
 	for idx, todo := range svc.UserTodos[sessionID] {
